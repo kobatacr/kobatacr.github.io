@@ -6,7 +6,7 @@
 // 🍂extends GridLayer
 L.GridLayer.GoogleMutant = L.GridLayer.extend({
 	options: {
-		minZoom: 15,
+		minZoom: 14,
 		maxZoom: 17,
 		tileSize: 256,
 		subdomains: 'abc',
