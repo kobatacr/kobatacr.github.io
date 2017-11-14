@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Refugio Nacional de Vida Silvestre Isla San Lucas - Kṍbata Costa Rica</title>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+      <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABjU92TECg-5La6l_2KBLvL8htsT1HaVQ&callback=initMap" type="text/javascript"></script>
+      <script type="text/javascript" src="Lib/Leaflet.GoogleMutant.js"></script>
+      <script type="text/javascript" src="Lib/Leaflet.GoogleMutant1.js"></script>
+      <script type="text/javascript" src="Data/Layers/Puntos.js"></script>
+      <script type="text/javascript" src="Data/Layers/Rutas.js"></script>
+
+
+    <!--CSS modificado-->
+      <style type="text/css">
+
+        html, body {
+       height:100%;
+       margin: 0;
+       padding: 0;
+      }
+        #map {
+          height:100%;
+      }
+
+      .leaflet-popup-content-wrapper,
+      .leaflet-popup-tip {
+        background: #76A06E;
+        }
+
+      .leaflet-popup-content-wrapper {
+      text-align: center;
+      border-radius: 12px;
+      }
+
+      .leaflet-popup-content {
+      line-height: 1.4;
+      }
+
+      </style>
+
+    </head>
+
+    <body>
+     
+      <div id="map"></div>
+     
+      <script>
+     
+    // inicio del mapa
+      var map = L.map('map').setView([9.943, -84.906], 14);
+    //--------------------------------------------------
+     
+    // Basemap
+      var googleLayer = new L.GridLayer.GoogleMutant();
+
+      map.addLayer(googleLayer);
+
+      var googleLayer1 = new L.GridLayer.GoogleMutant1();
+
+    //---------------------------------------------------------------
+
+    // Elimina ancho máximo del popup
+      var cambio = {
+
+        'maxWidth': 'none'
+      };
+
+    //-------------------------------------------
+    //Función popup de los puntos.
+
+    function popup_puntos(feature, layer) {
+      layer.bindPopup('<b>' + feature.properties.Nombre_1 + '</b>' + '<br>' + '<br>' + feature.properties.I1 + '<br>' + '<br>' + feature.properties.P1, cambio);
+    }
+
+    function popup_puntos_extra(feature, layer) {
+      layer.bindPopup('<b>' + feature.properties.Nombre_1 + '</b>' + '<br>' + '<br>' + feature.properties.I1 + '<br>' + '<br>' + feature.properties.P1 + '<br>' + '<br>' + feature.properties.A1 + '<br>' + '<br>' + feature.properties.P2, cambio);
+    }
+
+    //Función popup de las rutas.
+
+    function popup_rutas(feature, layer) {
+      layer.bindPopup('<iframe width="40" height="40" frameborder="0" src="Data/Icons/Send.png"></iframe>' + '<br>' + '<b>' + feature.properties.Nombre_1 + '</b>' + '<br>' + '<br>' + 'Duración: ' + feature.properties.Duracion + ' minutos.', cambio);
+    }
+
+    //--------------------------------------------
+    // Función estilo rutas.
+
+      function getColor(x) {
+        return x == 5     ?    '#FF5733':
+               x == 10     ?   '#75FF33':
+               x == 30     ?   '#33DBFF':
+               x == 45     ?   '#BD33FF':
+                        '#ffffff'
+          };
+
+    //---------------------------------------------
+    // Filtros
+
+      function filtro_CGP(feature, layer) {
+        if(feature.properties.ID === 1) return true;
+      };
+
+      function filtro_CH(feature, layer) {
+        if(feature.properties.ID === 2) return true;
+      };
+
+      function filtro_Playa(feature, layer) {
+        if(feature.properties.ID === 3) return true;
+      };
+
+      function filtro_Entrada(feature, layer) {
+        if(feature.properties.ID === 4) return true;
+      };
+
+      function filtro_Extra(feature, layer) {
+        if(feature.properties.ID === 5) return true;
+      };
+
+    //-----------------------------------------------
+
+    // Ícono, llama capa y función.
+
+      // 1) Rutas  
+      var Rutas = L.geoJson(Rut, {
+        onEachFeature: popup_rutas,
+        style: function (feature) {
+          return {
+            'color': getColor (feature.properties.Duracion),
+            'opacity': 0.7,
+            'weight': 4
+          }
+        }
+      }).addTo(map);
+
+      // 2) Casa Guardaparques
+      var Img1 = L.icon({
+        iconUrl: 'Data/Icons/CGP.png',
+        iconSize: [30, 30]
+      });
+
+      var PT1 = L.geoJson(Punt, {
+        pointToLayer: function(feature,latlng){
+        return L.marker(latlng, {icon: Img1});
+        },
+        onEachFeature: popup_puntos,
+        filter: filtro_CGP
+      });
+
+      // 3) Centros históricos
+      var Img2 = L.icon({
+        iconUrl: 'Data/Icons/Obs.png',
+        iconSize: [30, 30]
+      });
+
+      var PT2 = L.geoJson(Punt, {
+        pointToLayer: function(feature,latlng){
+        return L.marker(latlng, {icon: Img2});
+        },
+        onEachFeature: popup_puntos,
+        filter: filtro_CH
+      });
+
+      // 4) Playas
+      var Img3 = L.icon({
+        iconUrl: 'Data/Icons/Playa.png',
+        iconSize: [30, 30]
+      });
+
+      var PT3 = L.geoJson(Punt, {
+        pointToLayer: function(feature,latlng){
+        return L.marker(latlng, {icon: Img3});
+        },
+        onEachFeature: popup_puntos,
+        filter: filtro_Playa
+      });
+
+      // 5) Entrada
+      var Img4 = L.icon({
+        iconUrl: 'Data/Icons/Obs.png',
+        iconSize: [30, 30]
+      });
+
+      var PT4 = L.geoJson(Punt, {
+        pointToLayer: function(feature,latlng){
+        return L.marker(latlng, {icon: Img4});
+        },
+        onEachFeature: popup_puntos,
+        filter: filtro_Entrada
+      });
+
+      // 6) Cruce
+      var Img5 = L.icon({
+        iconUrl: 'Data/Icons/Obs.png',
+        iconSize: [30, 30]
+      });
+
+      var PT5 = L.geoJson(Punt, {
+        pointToLayer: function(feature,latlng){
+        return L.marker(latlng, {icon: Img5});
+        },
+        onEachFeature: popup_puntos_extra,
+        filter: filtro_Extra
+      });
+
+      var PTS = L.layerGroup([PT1, PT2, PT3, PT4, PT5]).addTo(map);
+
+      //----------------------------------------------------------------
+
+      L.control.scale().addTo(map);
+
+    //-------------------------------------------------
+
+    //Layers Control
+      var baseMaps = {
+              'Google Terrain' : googleLayer,
+              'Google Earth' : googleLayer1
+          };
+
+      var overlayMaps = {
+              'Sitios' : PTS,
+              'Rutas': Rutas
+          };
+
+      L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(map);
+
+      </script>
+    </body>
+  </html>
+
