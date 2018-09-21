@@ -60,7 +60,7 @@
 				$(
 					'<div id="titleBar">' +
 						'<a href="#navPanel" class="toggle"></a>' +
-						'<span class="title">' + '<a href = "index.html"><img src="images/KoBATA-07.png" height="60" width="60"></a>' + '</span>' +
+						'<span class="title">' + '<a href = "http://kobatacr.com"><img src="images/KoBATA-07.png" height="60" width="60"></a>' + '</span>' +
 					'</div>'
 				)
 					.appendTo($body);
